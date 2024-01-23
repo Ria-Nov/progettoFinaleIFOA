@@ -1,0 +1,19 @@
+.search input{
+    border-radius: 5px;
+    border: 1px solid #d7a62880;
+    width: 30vw;
+    background-color: rgba(255, 255, 255, 0.3);
+    text-align: center;
+}
+
+.bg-today{
+    background-color: #ffffff4d;
+    border: 1px solid #d7a62880;
+    border-radius: 5px;
+}
+
+.bg-forecast{
+    background-color: #d7a62880;
+    border: 1px solid #ffffff4d;
+    border-radius: 5px;
+}
