@@ -1,48 +1,117 @@
-import { useDispatch, useSelector } from 'react-redux';
-import axios from 'axios';
+// InputForm.js
+import { connect } from "react-redux";
+import {
+  setSearchLocation,
+  fetchTodayWeather,
+  fetchForecast,
+} from "../../redux/actions/locationActions";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
+import Container from "react-bootstrap/Container";
+import "./inputForm.css";
 
-const fetchWeatherData = (location) => axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=6986dde0ccf0b9f290d18dd4ea8dc513`);
+const InputForm = ({
+  location,
+  today,
+  forecast,
+  setSearchLocation,
+  fetchTodayWeather,
+  fetchForecast,
+}) => {
+  // const urlToday = `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=6986dde0ccf0b9f290d18dd4ea8dc513`;
+  // const urlForecast = `https://api.openweathermap.org/data/2.5/forecast?q=${location}&units=metric&appid=6986dde0ccf0b9f290d18dd4ea8dc513`;
 
-const WeatherApp = () => {
-  const dispatch = useDispatch();
-  const weather = useSelector((state) => state.weather.data);
-
-  const handleChangeLocation = (newLocation) => {
-    dispatch({ type: 'FETCH_WEATHER_DATA', payload: newLocation });
-  };
-
-  const handleRefresh = () => {
-    dispatch({ type: 'REFRESH_WEATHER_DATA' });
-  };
-
-  const fetchWeather = async () => {
-    try {
-      const response = await fetchWeatherData(weather.location);
-      const data = await response.json();
-      dispatch({ type: 'UPDATE_WEATHER_DATA', payload: data });
-    } catch (error) {
-      console.error(error);
+  const searchLocation = (event) => {
+    if (event.key === "Enter") {
+      fetchTodayWeather(location);
+      fetchForecast(location);
     }
   };
 
-  useEffect(() => {
-    fetchWeather();
-  }, []);
-
   return (
-    <div className="weather-app">
-      <input type="text" placeholder="Enter location" onChange={(event) => handleChangeLocation(event.target.value)} />
-      <button onClick={handleRefresh}>Refresh</button>
+    <Container fluid>
+      <Row className="flex-column">
+        <Col className="mt-5 text-center">
+          <p className="display-6">Will it Rain?</p>
+          <div className="search">
+            <input
+              value={location}
+              onChange={(event) => setSearchLocation(event.target.value)}
+              onKeyDown={searchLocation}
+              placeholder="Enter Location"
+              type="text"
+            />
+          </div>
+        </Col>
+      </Row>
+      {today.main !== undefined && (
+        <Row className="justify-content-center">
+          <Col xs={3} className="bg-today ms-2 mt-5 text-center">
+            <div>
+              <p className="text-center">Today's Weather</p>
+              <div className="fw-bold mt-3 display-6">
+                <p>{today.name}</p>
+              </div>
+              <div>
+                {today.main ? (
+                  <p className="display-6"> {today.main.temp.toFixed()}°</p>
+                ) : null}
+              </div>
+              <div>{today.weather ? <p>{today.weather[0].main}</p> : null}</div>
+            </div>
 
-      {weather && (
-        <div>
-          <h1>{weather.name}</h1>
-          <p>Current temperature: {weather.main.temp}°C</p>
-          <p>Weather condition: {weather.weather[0].main}</p>
-        </div>
+            {today.name !== undefined && (
+              <div>
+                <div>
+                  {today.main ? (
+                    <p className="fw-bold">
+                      {today.main.feels_like.toFixed()}°
+                    </p>
+                  ) : null}
+                  <p>Feels Like</p>
+                </div>
+                <div>
+                  {today.main ? (
+                    <p className="fw-bold">{today.main.humidity}%</p>
+                  ) : null}
+                  <p>Humidity</p>
+                </div>
+              </div>
+            )}
+          </Col>
+          <Col xs={5} className="bg-forecast mt-5 ms-4">
+            <div className="text-center">
+              <p>Tomorrow's Forecast</p>
+              <div className="fw-bold mt-3 display-6">
+                <p>{today.name}</p>
+              </div>
+              <p className="display-6">{forecast.temp?.toFixed()}°</p>
+              <p>
+                Min{" "}
+                <span className="fw-bold">{forecast.temp_min?.toFixed()}°</span>{" "}
+                - Max{" "}
+                <span className="fw-bold">{forecast.temp_max?.toFixed()}°</span>
+              </p>
+              <p className="fw-bold">{forecast.feels_like?.toFixed()}°</p>
+              <p>Feels Like</p>
+              <p className="fw-bold">{forecast.humidity} %</p>
+              <p>Humidity</p>
+            </div>
+          </Col>
+        </Row>
       )}
-    </div>
+    </Container>
   );
 };
 
-export default WeatherApp;
+const mapStateToProps = (state) => ({
+  location: state.location,
+  today: state.today,
+  forecast: state.forecast,
+});
+
+export default connect(mapStateToProps, {
+  setSearchLocation,
+  fetchTodayWeather,
+  fetchForecast,
+})(InputForm);

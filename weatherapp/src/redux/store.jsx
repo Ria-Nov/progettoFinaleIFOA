@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
-import rootReducer from './reducers/rootReducer'
+import locationReducer from './reducers/locationReducer'
 
 export default configureStore({
-  reducer: rootReducer,
+  reducer: locationReducer,
 })
