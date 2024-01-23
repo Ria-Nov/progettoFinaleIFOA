@@ -3,7 +3,6 @@ import { setSearchLocation, fetchTodayWeather, fetchForecast } from "../../redux
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Container from "react-bootstrap/Container";
-import axios from "axios";
 import "./inputForm.css";
 
 // Componente InputForm che ora riceve alcuni dati dallo stato globale grazie a Redux
