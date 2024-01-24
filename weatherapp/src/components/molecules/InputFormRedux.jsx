@@ -1,97 +1,96 @@
-import { connect } from "react-redux";
-import { setSearchLocation, fetchTodayWeather, fetchForecast } from "../../redux/actions/locationActions"; // Importazione delle azioni Redux
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setSearchLocation,
+  fetchTodayWeather,
+  fetchForecast,
+} from "../../redux/actions/locationActions";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Container from "react-bootstrap/Container";
 import "./inputForm.css";
 
-// Componente InputForm che ora riceve alcuni dati dallo stato globale grazie a Redux
-const InputForm = ({
-  location,
-  today,
-  forecast,
-  setSearchLocation,
-  fetchTodayWeather,
-  fetchForecast,
-}) => {
-  // URL per le chiamate API basato sulla posizione
-  const urlToday = `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=6986dde0ccf0b9f290d18dd4ea8dc513`;
-  const urlForecast = `https://api.openweathermap.org/data/2.5/forecast?q=${location}&units=metric&appid=6986dde0ccf0b9f290d18dd4ea8dc513`;
+// Definisci il componente funzionale InputForm
+const InputForm = () => {
+  // Accedi al dispatch e allo stato di Redux usando gli hooks useDispatch e useSelector
+  const dispatch = useDispatch();
+  const location = useSelector((state) => state.location);
+  const today = useSelector((state) => state.today);
+  const forecast = useSelector((state) => state.forecast);
 
-  // Gestore per la ricerca della posizione
+  //  URL delle API basati sulla posizione corrente
+ // const urlToday = `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=6986dde0ccf0b9f290d18dd4ea8dc513`;
+ // const urlForecast = `https://api.openweathermap.org/data/2.5/forecast?q=${location}&units=metric&appid=6986dde0ccf0b9f290d18dd4ea8dc513`;
+
+  // Gestore di eventi per la ricerca della posizione alla pressione del tasto "Enter"
   const searchLocation = (event) => {
     if (event.key === "Enter") {
-      // Azione Redux per impostare la posizione di ricerca
-      setSearchLocation(location);
+      // Dispaccia azioni Redux per aggiornare lo stato e recuperare i dati meteorologici
+      dispatch(setSearchLocation(location));
+      dispatch(fetchTodayWeather(location));
+      dispatch(fetchForecast(location));
 
-      // Azioni Redux per effettuare le chiamate API e aggiornare lo stato globale
-      fetchTodayWeather(location);
-      fetchForecast(location);
-
-      // Svuota la barra di ricerca
-      setSearchLocation("");
     }
   };
 
+  // Rendering per il componente InputForm
   return (
     <Container fluid>
       <Row className="flex-column">
         <Col className="mt-5 text-center">
-          <p className="display-6">Will it Rain?</p>
-          {/* Barra di ricerca */}
+          <p className="display-6">Pioverà?</p>
+          {/* Form di input per la ricerca della posizione */}
           <div className="search">
             <input
               value={location}
-              onChange={(event) => setSearchLocation(event.target.value)}
+              onChange={(event) => dispatch(setSearchLocation(event.target.value))}
               onKeyDown={searchLocation}
-              placeholder="Enter Location"
+              placeholder="Inserisci la posizione"
               type="text"
             />
           </div>
         </Col>
       </Row>
-      {/* Sezione di visualizzazione dei dati meteorologici */}
+      {/* Visualizza i dati meteorologici se disponibili */}
       {today.main !== undefined && (
         <Row className="justify-content-center">
-          {/* Today's Weather */}
+          {/* Meteo di oggi */}
           <Col xs={3} className="bg-today ms-2 mt-5 text-center">
             <div>
-              <p className="text-center">Today's Weather</p>
+              {/* Visualizza le informazioni sul meteo di oggi */}
+              <p className="text-center">Meteo di Oggi</p>
               <div className="fw-bold mt-3 display-6">
                 <p>{today.name}</p>
               </div>
               <div>
-                {today.main ? (
-                  <p className="display-6"> {today.main.temp.toFixed()}°</p>
-                ) : null}
+                {/* Visualizza la temperatura corrente */}
+                {today.main ? <p className="display-6"> {today.main.temp.toFixed()}°</p> : null}
               </div>
               <div>
+                {/* Visualizza le condizioni meteorologiche */}
                 {today.weather ? <p>{today.weather[0].main}</p> : null}
               </div>
             </div>
-
             {today.name !== undefined && (
               <div>
                 <div>
-                  {today.main ? (
-                    <p className="fw-bold">{today.main.feels_like.toFixed()}°</p>
-                  ) : null}
-                  <p>Feels Like</p>
+                  {/* Visualizza la temperatura percepita */}
+                  {today.main ? <p className="fw-bold">{today.main.feels_like.toFixed()}°</p> : null}
+                  <p>Percepita</p>
                 </div>
                 <div>
-                  {today.main ? (
-                    <p className="fw-bold">{today.main.humidity}%</p>
-                  ) : null}
-                  <p>Humidity</p>
+                  {/* Visualizza l'umidità */}
+                  {today.main ? <p className="fw-bold">{today.main.humidity}%</p> : null}
+                  <p>Umidità</p>
                 </div>
               </div>
             )}
           </Col>
 
-          {/* Tomorrow's Forecast */}
+          {/* Previsioni per domani */}
           <Col xs={5} className="bg-forecast mt-5 ms-4">
             <div className="text-center">
-              <p>Tomorrow's Forecast</p>
+              {/* Visualizza le informazioni sulle previsioni per domani */}
+              <p>Previsioni per Domani</p>
               <div className="fw-bold mt-3 display-6">
                 <p>{today.name}</p>
               </div>
@@ -101,9 +100,9 @@ const InputForm = ({
                 <span className="fw-bold">{forecast.temp_max?.toFixed()}°</span>
               </p>
               <p className="fw-bold">{forecast.feels_like?.toFixed()}°</p>
-              <p>Feels Like</p>
+              <p>Percepita</p>
               <p className="fw-bold">{forecast.humidity} %</p>
-              <p>Humidity</p>
+              <p>Umidità</p>
             </div>
           </Col>
         </Row>
@@ -112,16 +111,4 @@ const InputForm = ({
   );
 };
 
-// Funzione per mappare lo stato Redux alle proprietà del componente
-const mapStateToProps = (state) => ({
-  location: state.location,
-  today: state.today,
-  forecast: state.forecast,
-});
-
-// Connette il componente a Redux e mappa le azioni alle proprietà
-export default connect(mapStateToProps, {
-  setSearchLocation,
-  fetchTodayWeather,
-  fetchForecast,
-})(InputForm);
+export default InputForm;
