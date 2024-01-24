@@ -37,7 +37,7 @@ const InputForm = () => {
     <Container fluid>
       <Row className="flex-column">
         <Col className="mt-5 text-center">
-          <p className="display-6">Pioverà?</p>
+          <p className="display-6">Will It Rain?</p>
           {/* Form di input per la ricerca della posizione */}
           <div className="search">
             <input
@@ -57,7 +57,7 @@ const InputForm = () => {
           <Col xs={3} className="bg-today ms-2 mt-5 text-center">
             <div>
               {/* Visualizza le informazioni sul meteo di oggi */}
-              <p className="text-center">Meteo di Oggi</p>
+              <p className="text-center">Today</p>
               <div className="fw-bold mt-3 display-6">
                 <p>{today.name}</p>
               </div>
@@ -90,7 +90,7 @@ const InputForm = () => {
           <Col xs={5} className="bg-forecast mt-5 ms-4">
             <div className="text-center">
               {/* Visualizza le informazioni sulle previsioni per domani */}
-              <p>Previsioni per Domani</p>
+              <p>Tomorrow</p>
               <div className="fw-bold mt-3 display-6">
                 <p>{today.name}</p>
               </div>
