@@ -32,7 +32,6 @@ const InputForm = () => {
     }
   };
 
-  // Rendering per il componente InputForm
   return (
     <Container fluid>
       <Row className="flex-column">
@@ -57,13 +56,14 @@ const InputForm = () => {
           <Col xs={3} className="bg-today ms-2 mt-5 text-center">
             <div>
               {/* Visualizza le informazioni sul meteo di oggi */}
-              <p className="text-center">Today</p>
+              <p className="text-center mt-3">Today</p>
               <div className="fw-bold mt-3 display-6">
                 <p>{today.name}</p>
               </div>
-              <div>
+              <div className="d-flex flex-column">
                 {/* Visualizza la temperatura corrente */}
-                {today.main ? <p className="display-6"> {today.main.temp.toFixed()}°</p> : null}
+              {today.main ? <p className="display-6 mb-0">{today.main.temp.toFixed()}°</p> : null}
+                <img src={`https://openweathermap.org/img/wn/${today.weather[0].icon}@2x.png`} alt="weather" className="wIcon mt-2"/>
               </div>
               <div>
                 {/* Visualizza le condizioni meteorologiche */}
@@ -75,34 +75,39 @@ const InputForm = () => {
                 <div>
                   {/* Visualizza la temperatura percepita */}
                   {today.main ? <p className="fw-bold">{today.main.feels_like.toFixed()}°</p> : null}
-                  <p>Percepita</p>
+                  <p>Feels Like</p>
                 </div>
                 <div>
                   {/* Visualizza l'umidità */}
                   {today.main ? <p className="fw-bold">{today.main.humidity}%</p> : null}
-                  <p>Umidità</p>
+                  <p>Humidity</p>
                 </div>
               </div>
             )}
           </Col>
 
           {/* Previsioni per domani */}
-          <Col xs={5} className="bg-forecast mt-5 ms-4">
-            <div className="text-center">
+          <Col xs={3} className="bg-forecast mt-5 ms-4">
+            <div className="text-center mt-3">
               {/* Visualizza le informazioni sulle previsioni per domani */}
               <p>Tomorrow</p>
-              <div className="fw-bold mt-3 display-6">
+              <div className="fw-bold mt-3 display-6 mb-0">
                 <p>{today.name}</p>
               </div>
+              <div className="d-flex flex-column">
               <p className="display-6">{forecast.temp?.toFixed()}°</p>
-              <p>
-                Min <span className="fw-bold">{forecast.temp_min?.toFixed()}°</span> - Max{" "}
-                <span className="fw-bold">{forecast.temp_max?.toFixed()}°</span>
+              <img src={`https://openweathermap.org/img/wn/${today.weather[0].icon}@2x.png`} alt="weather" className="wIcon mt-0"/>
+              </div>
+              <p className="d-flex justify-content-center mx-auto">
+                Min <span className="fw-bold mx-2"> {forecast.temp_min?.toFixed()}°</span> - Max
+                <span className="fw-bold mx-2"> {forecast.temp_max?.toFixed()}°</span>
               </p>
+              <div className="">
               <p className="fw-bold">{forecast.feels_like?.toFixed()}°</p>
-              <p>Percepita</p>
+              <p>Feels Like</p></div>
+              <div className="">
               <p className="fw-bold">{forecast.humidity} %</p>
-              <p>Umidità</p>
+              <p>Humidity</p></div>
             </div>
           </Col>
         </Row>
